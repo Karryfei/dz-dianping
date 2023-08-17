@@ -62,7 +62,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
 
     @PostConstruct
     private void init() {
-        SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
+//        SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
     }
 
     private class VoucherOrderHandler implements Runnable {
@@ -374,7 +374,9 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         // 5.一人一单
         Long userId = UserHolder.getUser().getId();
 
-        synchronized (userId.toString().intern()) {
+        synchronized (userId.toString().intern()) {  // 不要把锁加到方法上，不然会对所有来执行这个方法的用户都会加锁，而我们要的只是对同一个用户加锁。.intern()返回常量池中的字符串
+                                                     // 但锁加在这里范围还是太小，因为这个事务被spring管理，等方法执行完才由spring提交，但我们在方法中间就释放锁了，就可能出现还没提交别的线程又进入方法了。
+                                                     // 所以看谁调用这个方法，把这个方法用判断用户的方式加上锁。
             // 5.1.查询订单
             int count = query().eq("user_id", userId).eq("voucher_id", voucherId).count();
             // 5.2.判断是否存在

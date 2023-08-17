@@ -46,12 +46,12 @@ public class UploadController {
 
     private String createNewFileName(String originalFilename) {
         // 获取后缀
-        String suffix = StrUtil.subAfter(originalFilename, ".", true);
+        String suffix = StrUtil.subAfter(originalFilename, ".", true);  // 获取文件后缀名比如png
         // 生成目录
-        String name = UUID.randomUUID().toString();
-        int hash = name.hashCode();
-        int d1 = hash & 0xF;
-        int d2 = (hash >> 4) & 0xF;
+        String name = UUID.randomUUID().toString();  // 生成一个唯一的字符串
+        int hash = name.hashCode();  // 获取该字符串的哈希码
+        int d1 = hash & 0xF;  //与0xF（十六进制F: 1111）进行按位与操作得到低四位的结果d1
+        int d2 = (hash >> 4) & 0xF;  // 将哈希码右移四位后再与0xF进行按位与操作得到次低四位的结果d2
         // 判断目录是否存在
         File dir = new File(SystemConstants.IMAGE_UPLOAD_DIR, StrUtil.format("/blogs/{}/{}", d1, d2));
         if (!dir.exists()) {

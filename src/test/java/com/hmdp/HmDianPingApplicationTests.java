@@ -11,6 +11,7 @@ import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import javax.annotation.Resource;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -107,5 +108,11 @@ class HmDianPingApplicationTests {
         // 统计数量
         Long count = stringRedisTemplate.opsForHyperLogLog().size("hl2");
         System.out.println("count = " + count);
+    }
+
+    @Test
+    void incre() {
+        long count = stringRedisTemplate.opsForValue().increment("icr");
+        System.out.println("count是"+count);
     }
 }
